@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck, Flame } from "lucide-react";
 import { trackClientClick } from "./AnalyticsTracker";
 
 interface StickyMobileCTAProps {
@@ -48,14 +48,15 @@ export default function StickyMobileCTA({ onUnlockClick }: StickyMobileCTAProps)
           onClick={() => {
             trackClientClick(
               "sticky_mobile_activate_btn",
-              "Activate Protocol (Sticky Mobile)",
+              "Claim ₹199 Limited Offer (Sticky Mobile)",
               "Sticky Mobile Bar"
             );
             onUnlockClick("sticky_mobile_activate_btn");
           }}
-          className="flex-1 py-3 px-4 rounded-xl bg-crimson active:bg-rose-700 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg shadow-crimson/40 cursor-pointer"
+          className="flex-1 py-3 px-3 rounded-xl bg-gradient-to-r from-crimson to-rose-600 active:from-rose-700 active:to-rose-800 text-white font-extrabold text-[11px] sm:text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-lg shadow-crimson/50 cursor-pointer border border-rose-500/30"
         >
-          <span>Activate Protocol — ₹199</span>
+          <Flame className="w-3.5 h-3.5 text-white animate-pulse" />
+          <span>Claim ₹199 Offer (Ends Tonight)</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

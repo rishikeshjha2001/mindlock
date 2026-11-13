@@ -190,14 +190,14 @@ export default function SelfDiagnosisWidget({ onUnlockClick }: SelfDiagnosisWidg
               onClick={() => {
                 trackClientClick(
                   "diagnosis_cta_btn",
-                  "See How MINDLOCK Fixes This Loop →",
+                  "Claim ₹199 Solution — End This Loop Now",
                   "Self Diagnosis"
                 );
                 onUnlockClick("diagnosis_cta_btn");
               }}
-              className="w-full sm:flex-1 py-3.5 px-5 rounded-xl bg-crimson hover:bg-rose-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-crimson/30 transition-all cursor-pointer"
+              className="w-full sm:flex-1 py-3.5 px-5 rounded-xl bg-gradient-to-r from-crimson to-rose-600 hover:from-rose-600 hover:to-rose-700 text-white font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-crimson/35 transition-all cursor-pointer border border-rose-500/30"
             >
-              <span>See How MINDLOCK Silences This Loop</span>
+              <span>Claim ₹199 Solution — End This Loop Now</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 

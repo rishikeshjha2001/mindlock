@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import SelfDiagnosisWidget from "@/components/SelfDiagnosisWidget";
+import UrgencyTimer from "@/components/UrgencyTimer";
 import CheckoutModal from "@/components/CheckoutModal";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import Footer from "@/components/Footer";
@@ -74,28 +75,47 @@ export default function LandingPage() {
           <strong className="text-white">shame paralysis and dopamine burnout</strong>. Reset how your brain handles pressure in 7 days—without fake motivation or rigid timetables.
         </p>
 
-        {/* Primary Non-Sales Hero CTA */}
-        <div className="mt-8 flex flex-col items-center justify-center gap-2.5">
+        {/* High-Converting Psychological Hero CTA Container */}
+        <div className="mt-8 flex flex-col items-center justify-center gap-3.5 max-w-xl mx-auto">
+          {/* Live Countdown Urgency Timer */}
+          <UrgencyTimer />
+
+          {/* Primary High-Urgency Action Button */}
           <button
-            id="hero_activate_btn"
-            data-track-btn="hero_activate_btn"
+            id="hero_buy_btn"
+            data-track-btn="hero_buy_btn"
             onClick={() => {
               trackClientClick(
-                "hero_activate_btn",
-                "Activate My Reset Protocol →",
+                "hero_buy_btn",
+                "Claim Limited ₹199 Offer — Lock Your Rank Now →",
                 "Hero"
               );
-              handleOpenCheckout("hero_activate_btn");
+              handleOpenCheckout("hero_buy_btn");
             }}
-            className="w-full sm:w-auto px-8 sm:px-11 py-4 sm:py-4.5 rounded-2xl bg-crimson hover:bg-rose-500 text-white font-extrabold text-base sm:text-lg tracking-wide shadow-[0_0_30px_rgba(225,29,72,0.45)] transition-all transform active:scale-95 cursor-pointer flex items-center justify-center gap-3 group"
+            className="w-full sm:w-auto px-8 sm:px-11 py-4 sm:py-4.5 rounded-2xl bg-gradient-to-r from-crimson via-rose-600 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white font-extrabold text-base sm:text-lg tracking-wide shadow-[0_0_35px_rgba(225,29,72,0.55)] hover:shadow-[0_0_45px_rgba(225,29,72,0.75)] transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3 group border border-rose-500/40"
           >
-            <span>Activate My Reset Protocol →</span>
+            <Flame className="w-5 h-5 text-white animate-pulse" />
+            <span>Claim Limited ₹199 Offer — Lock Your Rank Now</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
           </button>
 
-          {/* Micro-trust line */}
-          <p className="text-xs text-slateText-muted font-mono">
-            Instant PDF Manual + 8 Hindi Audio Drills • ₹199 One-Time Commitment
-          </p>
+          {/* Pricing Anchor & Scarcity Proof */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-slateText-secondary font-mono">
+            <span className="flex items-center gap-1.5">
+              <span className="line-through text-slate-500 font-bold">₹799</span>
+              <span className="text-white font-black text-sm">₹199 Only</span>
+              <span className="px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 font-bold text-[10px] border border-emerald-800/40">75% OFF</span>
+            </span>
+            <span className="text-slate-500">•</span>
+            <span className="text-crimson font-semibold">Only 8 Copies Left at ₹199</span>
+            <span className="text-slate-500">•</span>
+            <span className="text-slate-300">Instant UPI & Vault Access</span>
+          </div>
+
+          {/* Loss Aversion Psychological Callout */}
+          <div className="mt-2 p-3 sm:p-3.5 rounded-xl bg-white/[0.03] border border-white/10 text-center max-w-lg text-[11px] sm:text-xs text-slateText-muted leading-relaxed">
+            <span className="text-white font-semibold">⚠️ The Brutal Reality:</span> Another dropped year costs <strong className="text-rose-400">₹1,50,000+</strong> in coaching, hostel & shame. Fix your cognitive focus today for less than the price of one meal.
+          </div>
         </div>
       </section>
 
@@ -566,15 +586,16 @@ export default function LandingPage() {
               onClick={() => {
                 trackClientClick(
                   "pricing_activate_btn",
-                  "Unlock Full Vault Access — ₹199",
+                  "Lock My ₹199 Special Offer — Save ₹600 Today",
                   "Pricing"
                 );
                 handleOpenCheckout("pricing_activate_btn");
               }}
-              className="w-full max-w-md mx-auto py-4 sm:py-4.5 px-6 rounded-2xl bg-crimson hover:bg-rose-500 text-white font-extrabold text-base sm:text-lg tracking-wide shadow-[0_0_35px_rgba(225,29,72,0.45)] transition-all transform active:scale-98 cursor-pointer flex items-center justify-center gap-2 group"
+              className="w-full max-w-md mx-auto py-4 sm:py-4.5 px-6 rounded-2xl bg-gradient-to-r from-crimson via-rose-600 to-rose-700 hover:from-rose-600 hover:to-rose-800 text-white font-extrabold text-base sm:text-lg tracking-wide shadow-[0_0_35px_rgba(225,29,72,0.55)] hover:shadow-[0_0_45px_rgba(225,29,72,0.75)] transition-all transform hover:scale-[1.02] active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 group border border-rose-500/40"
             >
-              <span>Unlock Full Vault Access — ₹199</span>
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Flame className="w-5 h-5 text-white animate-pulse" />
+              <span>Lock My ₹199 Special Offer — Save ₹600</span>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
             </button>
 
             {/* UPI Badges */}
