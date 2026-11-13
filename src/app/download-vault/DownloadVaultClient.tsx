@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   Download,
@@ -16,30 +17,25 @@ import {
 } from "lucide-react";
 import { trackClientClick } from "@/components/AnalyticsTracker";
 
-interface DownloadVaultClientProps {
-  initialKey?: string;
-}
-
-export default function DownloadVaultClient({ initialKey = "" }: DownloadVaultClientProps) {
+export default function DownloadVaultClient() {
+  const searchParams = useSearchParams();
   const expectedKey = "mindlock2026";
-  const [isAuthorized, setIsAuthorized] = useState<boolean>(() => {
-    return initialKey === expectedKey;
-  });
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false);
   const [whatsappInput, setWhatsappInput] = useState("");
   const [authError, setAuthError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
-    if (initialKey === expectedKey) {
+    const keyParam = searchParams.get("key");
+    const unlockedLocal = localStorage.getItem("mindlock_vault_unlocked");
+
+    if (keyParam === expectedKey || unlockedLocal === "true") {
       setIsAuthorized(true);
       localStorage.setItem("mindlock_vault_unlocked", "true");
     } else {
-      const unlockedLocal = localStorage.getItem("mindlock_vault_unlocked");
-      if (unlockedLocal === "true") {
-        setIsAuthorized(true);
-      }
+      setIsAuthorized(false);
     }
-  }, [initialKey]);
+  }, [searchParams]);
 
   const handleWhatsappUnlock = (e: React.FormEvent) => {
     e.preventDefault();
@@ -297,4 +293,3 @@ export default function DownloadVaultClient({ initialKey = "" }: DownloadVaultCl
     </div>
   );
 }
-

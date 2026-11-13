@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     let body;

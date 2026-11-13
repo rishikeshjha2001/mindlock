@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { calculateAnalyticsStats } from "@/lib/store";
 import { isUserAdmin } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const isAdmin = await isUserAdmin();

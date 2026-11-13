@@ -10,6 +10,8 @@ import {
 } from "@/lib/store";
 import { getNowIst } from "@/lib/date-utils";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     let body;
@@ -46,7 +48,6 @@ export async function POST(req: NextRequest) {
       };
       store.visits.push(visit);
 
-      // Keep up to 10,000 visits in memory
       if (store.visits.length > 10000) store.visits.shift();
 
       forwardToCloudWebhook("VISIT", {
@@ -141,7 +142,6 @@ export async function POST(req: NextRequest) {
       };
       store.leads.push(lead);
 
-      // Register checkout click
       store.clicks.push({
         id: generateId(),
         sessionId: lead.sessionId,
@@ -174,4 +174,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to record event" }, { status: 500 });
   }
 }
-

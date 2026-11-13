@@ -6,6 +6,8 @@ import {
   generateSessionToken,
 } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -19,7 +21,6 @@ export async function POST(req: NextRequest) {
         message: "Login successful",
       });
 
-      // 30 days cookie
       response.cookies.set({
         name: ADMIN_COOKIE_NAME,
         value: token,
@@ -45,4 +46,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

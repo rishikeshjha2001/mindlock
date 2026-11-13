@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStore, generateId, forwardToCloudWebhook, LeadRecord } from "@/lib/store";
 import { getNowIst } from "@/lib/date-utils";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -38,7 +40,6 @@ export async function POST(req: NextRequest) {
 
     store.leads.push(lead);
 
-    // Record checkout button click
     store.clicks.push({
       id: generateId(),
       sessionId: lead.sessionId,
