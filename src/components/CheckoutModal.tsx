@@ -89,9 +89,10 @@ export default function CheckoutModal({
         const orderInfo = await orderRes.json();
 
         // If Razorpay SDK is loaded and a key is provided
-        if (orderInfo?.keyId && typeof window !== "undefined" && window.Razorpay) {
+        const activeRazorpayKey = orderInfo?.keyId || "rzp_live_Tzg3cRYuMD2Dyi";
+        if (activeRazorpayKey && typeof window !== "undefined" && window.Razorpay) {
           const options = {
-            key: orderInfo.keyId,
+            key: activeRazorpayKey,
             amount: orderInfo.amount || 19900,
             currency: orderInfo.currency || "INR",
             name: "MINDLOCK Protocol",

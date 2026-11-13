@@ -1,7 +1,8 @@
 "use client";
 
-import { Brain, ShieldAlert, Sparkles, ArrowRight } from "lucide-react";
+import { ShieldAlert, Sparkles, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import MindlockLogo from "./MindlockLogo";
 import { trackClientClick } from "./AnalyticsTracker";
 
 interface NavbarProps {
@@ -21,26 +22,8 @@ export default function Navbar({ onUnlockClick }: NavbarProps) {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Brand Logo & Tagline */}
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 text-white font-extrabold text-lg sm:text-xl tracking-tight group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-crimson/20 border border-crimson/40 flex items-center justify-center text-crimson group-hover:bg-crimson group-hover:text-white transition-all shadow-[0_0_15px_rgba(225,29,72,0.25)]">
-            <Brain className="w-5 h-5" />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5 leading-none">
-              <span className="tracking-tight">
-                MIND<span className="text-crimson">LOCK</span>
-              </span>
-              <span className="text-[9px] px-1.5 py-0.5 bg-white/10 text-slate-300 rounded font-mono uppercase">
-                v2.4
-              </span>
-            </div>
-            <span className="text-[10px] text-slateText-muted font-normal tracking-normal hidden sm:block">
-              Silence the Fear. Lock Your Rank.
-            </span>
-          </div>
+        <Link href="/" className="transition-transform active:scale-95">
+          <MindlockLogo size="md" />
         </Link>
 
         {/* Center Live Aspirant Activity */}

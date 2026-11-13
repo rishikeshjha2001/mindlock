@@ -13,8 +13,12 @@ export async function POST(req: NextRequest) {
     const razorpayKeyId =
       process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
       process.env.RAZORPAY_KEY_ID ||
-      "";
-    const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || "";
+      store.config.razorpayKeyId ||
+      "rzp_live_Tzg3cRYuMD2Dyi";
+    const razorpayKeySecret =
+      process.env.RAZORPAY_KEY_SECRET ||
+      store.config.razorpayKeySecret ||
+      "BlLMQeZ1H7msPRl7IjJbi56V";
 
     // If Razorpay API keys are configured, create server-side order
     if (razorpayKeyId && razorpayKeySecret) {

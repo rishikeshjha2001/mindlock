@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Download, Headphones, BookOpen, MessageCircle, ArrowLeft, ShieldCheck, Sparkles } from "lucide-react";
+import { CheckCircle2, Download, Headphones, BookOpen, ArrowLeft, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function CheckoutConfirmPage() {
   return (
@@ -93,22 +93,12 @@ export default function CheckoutConfirmPage() {
             </ol>
           </div>
 
-          {/* WhatsApp Support Button */}
-          <div className="mt-6 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-left text-xs text-slateText-muted flex items-center gap-1.5">
+          {/* Access Support Note */}
+          <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-center text-center">
+            <div className="text-xs text-slateText-muted flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Need help? Our student support desk is active.</span>
+              <span>Lifetime vault access verified. All files are downloadable directly from this page.</span>
             </div>
-
-            <a
-              href="https://wa.me/919876543210?text=Hi%2C%20I%20just%20unlocked%20MINDLOCK%20and%20need%20assistance."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-black/40"
-            >
-              <MessageCircle className="w-4 h-4 fill-white" />
-              <span>Chat with Aspirant Support</span>
-            </a>
           </div>
         </div>
       </div>

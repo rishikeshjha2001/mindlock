@@ -11,7 +11,6 @@ import {
   CheckCircle2,
   Lock,
   ArrowRight,
-  MessageCircle,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
@@ -271,22 +270,12 @@ export default function DownloadVaultClient() {
             </ol>
           </div>
 
-          {/* Direct WhatsApp Support */}
-          <div className="mt-6 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-slateText-muted flex items-center gap-1.5">
+          {/* Secure Access Status */}
+          <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-center text-center">
+            <div className="text-xs text-slateText-muted flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>Lifetime access backed by 1-on-1 student desk.</span>
+              <span>Lifetime vault access activated. Bookmark this page URL to re-access your files anytime.</span>
             </div>
-
-            <a
-              href="https://wa.me/919876543210?text=Hi%20MINDLOCK%20Team%2C%20I%20have%20unlocked%20the%20vault%20and%20am%20ready%20for%20Day%201."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-black font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg"
-            >
-              <MessageCircle className="w-4 h-4 fill-black" />
-              <span>Connect on WhatsApp</span>
-            </a>
           </div>
         </div>
       </div>

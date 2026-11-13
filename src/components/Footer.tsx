@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Brain, Lock, ShieldCheck, Mail, Heart } from "lucide-react";
+import { Lock, ShieldCheck, Mail, Heart } from "lucide-react";
+import MindlockLogo from "./MindlockLogo";
 
 export default function Footer() {
   return (
@@ -7,12 +8,9 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
         {/* Brand */}
         <div className="md:col-span-2 space-y-3">
-          <div className="flex items-center gap-2 text-white font-bold text-lg tracking-tight">
-            <div className="w-7 h-7 rounded-lg bg-crimson/20 border border-crimson/40 flex items-center justify-center text-crimson">
-              <Brain className="w-4 h-4" />
-            </div>
-            <span>MIND<span className="text-crimson">LOCK</span></span>
-          </div>
+          <Link href="/">
+            <MindlockLogo size="sm" showTagline={false} />
+          </Link>
           <p className="text-xs text-slateText-muted max-w-md leading-relaxed">
             The psychological operating system built specifically for 18–25 year old Indian competitive exam aspirants (JEE, NEET, UPSC, SSC, Banking). Engineered to dismantle fear, guilt, overthinking, and dopamine burnout.
           </p>
