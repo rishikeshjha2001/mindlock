@@ -48,9 +48,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Plus Jakarta Sans", "system-ui", "sans-serif"],
-        hindi: ["var(--font-hindi)", "Noto Sans Devanagari", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "JetBrains Mono", "monospace"],
+        sans: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
+        hindi: ["'Noto Sans Devanagari'", "system-ui", "sans-serif"],
+        mono: ["'JetBrains Mono'", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.03em",

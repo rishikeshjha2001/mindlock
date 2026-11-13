@@ -27,6 +27,8 @@ import {
   Link as LinkIcon,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 interface KPIs {
   totalVisits: number;
   todayVisits: number;

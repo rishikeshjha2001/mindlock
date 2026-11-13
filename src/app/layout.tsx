@@ -1,28 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Noto_Sans_Devanagari, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ReadingProgressBar from "@/components/ReadingProgressBar";
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const notoSansDevanagari = Noto_Sans_Devanagari({
-  subsets: ["devanagari"],
-  variable: "--font-hindi",
-  weight: ["400", "700"],
-  display: "swap",
-  adjustFontFallback: false,
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "MINDLOCK — Silence the Fear. Lock Your Rank.",
@@ -53,10 +32,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`dark scroll-smooth ${plusJakartaSans.variable} ${notoSansDevanagari.variable} ${jetbrainsMono.variable}`}
-    >
+    <html lang="en" className="dark scroll-smooth">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="bg-[#0A0A0A] text-slateText-primary min-h-screen antialiased selection:bg-crimson selection:text-white font-sans">
         <ReadingProgressBar />
         <AnalyticsTracker />
