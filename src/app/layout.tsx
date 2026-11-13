@@ -13,8 +13,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 const notoSansDevanagari = Noto_Sans_Devanagari({
   subsets: ["devanagari"],
   variable: "--font-hindi",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "700"],
   display: "swap",
+  adjustFontFallback: false,
 });
 
 const jetbrainsMono = JetBrains_Mono({

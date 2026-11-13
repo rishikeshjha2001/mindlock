@@ -27,6 +27,8 @@ import {
   Link as LinkIcon,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 interface KPIs {
   totalVisits: number;
   todayVisits: number;
@@ -135,6 +137,13 @@ export default function AdminPage() {
   const [isSavingSettings, setIsSavingSettings] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   const fetchStats = async () => {
     setIsLoadingStats(true);
@@ -242,8 +251,8 @@ export default function AdminPage() {
   };
 
   const copyVaultRedirectUrl = () => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "";
-    const redirectUrl = `${origin}/download-vault?key=${vaultKey}`;
+    const currentOrigin = origin || (typeof window !== "undefined" ? window.location.origin : "");
+    const redirectUrl = `${currentOrigin}/download-vault?key=${vaultKey}`;
     navigator.clipboard.writeText(redirectUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
@@ -1015,7 +1024,7 @@ export default function AdminPage() {
 
               <div className="flex items-center gap-2 bg-black/60 border border-[#2a2a2a] p-3 rounded-2xl font-mono text-xs text-emerald-300">
                 <span className="truncate flex-1">
-                  {typeof window !== "undefined" ? window.location.origin : ""}/download-vault?key={vaultKey}
+                  {origin ? `${origin}/download-vault?key=${vaultKey}` : `/download-vault?key=${vaultKey}`}
                 </span>
                 <button
                   type="button"
