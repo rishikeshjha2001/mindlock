@@ -38,10 +38,8 @@ Built with **Next.js 15 (App Router)**, **TypeScript**, **Tailwind CSS**, **Luci
 - **Lead Records:** Full name, phone number, target exam, source CTA button, and date/time.
 
 ### 4. Protected Admin Panel (`/admin`)
-- **Login Credentials:**
-  - **Admin ID:** `admin@bookify`
-  - **Password:** `Rishi@2003`
-  - Secured via signed HTTP-only cookie (`mindlock_admin_session`).
+- **Authentication:** Configurable via environment variables `ADMIN_USERNAME` and `ADMIN_PASSWORD`.
+- Secured via signed HTTP-only cookie (`mindlock_admin_auth`).
 - **Top KPI Cards:** Page views (all-time & today), unique visitors, button clicks, checkout initiations / leads, click-to-lead conversion rate (%), and average time on site.
 - **Tab 1: Daily Traffic & Time-Per-Day Analytics:** Interactive SVG velocity bar chart + detailed tabular breakdown per day with peak traffic hours.
 - **Tab 2: Button Click Intelligence:** Ranked CTA table with exact click counts, unique clickers, and click share (%).

@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 
 export const ADMIN_COOKIE_NAME = "mindlock_admin_auth";
-export const ADMIN_USERNAME = "admin@bookify";
-export const ADMIN_PASSWORD = "Rishi@2003";
+export const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin@mindlock.internal";
+export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "MindlockSecure#2026!";
 
 const SECRET_SALT = "mindlock_auth_secret_token_991823719";
 

@@ -103,9 +103,12 @@ export async function forwardToCloudWebhook(
   payload: Record<string, unknown>
 ) {
   const store = getStore();
-  const webhookUrl = store.config.webhookUrl;
-  const botToken = store.config.telegramBotToken;
-  const chatId = store.config.telegramChatId;
+  const webhookUrl =
+    process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
+    process.env.WEBHOOK_URL ||
+    store.config.webhookUrl;
+  const botToken = process.env.TELEGRAM_BOT_TOKEN || store.config.telegramBotToken;
+  const chatId = process.env.TELEGRAM_CHAT_ID || store.config.telegramChatId;
 
   // 1. Google Sheets / Custom Webhook forward
   if (webhookUrl && webhookUrl.startsWith("http")) {

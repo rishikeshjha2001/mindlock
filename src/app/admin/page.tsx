@@ -311,7 +311,7 @@ export default function AdminPage() {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="admin@bookify"
+                placeholder="admin@mindlock.internal"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-[#2a2a2a] text-white focus:outline-none focus:border-crimson text-sm font-mono"
               />
             </div>
