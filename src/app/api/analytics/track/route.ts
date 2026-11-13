@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
 
     // 5. Student Lead Capture
     if (type === "LEAD") {
-      const { sessionId, name, whatsapp, targetExam, sourceButton } = body;
+      const { sessionId, name, whatsapp, targetExam, sourceButton, pagePath, lang } = body;
 
       const cleanWhatsapp = (whatsapp || "").replace(/\D/g, "");
       const lead: LeadRecord = {
@@ -137,6 +137,8 @@ export async function POST(req: NextRequest) {
         whatsapp: cleanWhatsapp.slice(-10),
         targetExam: (targetExam || "JEE").slice(0, 60),
         sourceButton: (sourceButton || "checkout_modal").slice(0, 100),
+        pagePath: (pagePath || "/").slice(0, 255),
+        lang: (lang || "en-hi").slice(0, 20),
         createdAt: isoString,
         dateIst,
       };
@@ -148,7 +150,7 @@ export async function POST(req: NextRequest) {
         buttonId: "modal_proceed_payment_btn",
         buttonText: "Proceed to Instant UPI Access (₹199)",
         sectionName: "Access Modal",
-        pagePath: "/",
+        pagePath: lead.pagePath,
         clickedAt: isoString,
         dateIst,
       });

@@ -25,9 +25,9 @@ import {
   Check,
   Send,
   Link as LinkIcon,
+  Globe,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
 
 interface KPIs {
   totalVisits: number;
@@ -75,6 +75,19 @@ interface VisitLog {
   timeSpentSeconds: number;
 }
 
+interface LanguageRow {
+  code: string;
+  name: string;
+  nativeName: string;
+  pathPrefix: string;
+  visits: number;
+  uniqueVisitors: number;
+  clicks: number;
+  leads: number;
+  conversionRate: string;
+  estimatedRevenue: number;
+}
+
 interface LeadRow {
   id: string;
   sessionId: string;
@@ -84,6 +97,8 @@ interface LeadRow {
   sourceButton: string;
   createdAt: string;
   dateIst: string;
+  pagePath?: string;
+  lang?: string;
 }
 
 interface DiagnosisInsights {
@@ -104,7 +119,7 @@ interface SiteConfig {
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState<
-    "daily" | "buttons" | "visits" | "diagnosis" | "leads" | "settings"
+    "daily" | "languages" | "buttons" | "visits" | "diagnosis" | "leads" | "settings"
   >("daily");
 
   // Login form state
@@ -116,6 +131,7 @@ export default function AdminPage() {
   // Dashboard data
   const [kpis, setKpis] = useState<KPIs | null>(null);
   const [dailyAnalytics, setDailyAnalytics] = useState<DailyRow[]>([]);
+  const [languageBreakdown, setLanguageBreakdown] = useState<LanguageRow[]>([]);
   const [buttonIntelligence, setButtonIntelligence] = useState<ButtonRow[]>([]);
   const [recentVisits, setRecentVisits] = useState<VisitLog[]>([]);
   const [leads, setLeads] = useState<LeadRow[]>([]);
@@ -159,6 +175,7 @@ export default function AdminPage() {
         setIsAuthenticated(true);
         setKpis(data.kpis);
         setDailyAnalytics(data.dailyAnalytics || []);
+        setLanguageBreakdown(data.languageBreakdown || []);
         setButtonIntelligence(data.buttonIntelligence || []);
         setRecentVisits(data.recentVisits || []);
         setLeads(data.leads || []);
@@ -493,6 +510,7 @@ export default function AdminPage() {
         <div className="flex items-center gap-2 border-b border-[#222222] pb-3 mb-6 overflow-x-auto">
           {[
             { id: "daily", label: "Traffic & Time Per Day", icon: Calendar },
+            { id: "languages", label: "Regional Language Analytics", icon: Globe },
             { id: "buttons", label: "Button Click Intelligence", icon: MousePointerClick },
             { id: "visits", label: "Page Visit Logs", icon: Layers },
             { id: "diagnosis", label: "Aspirant Diagnosis Insights", icon: Brain },
@@ -624,6 +642,121 @@ export default function AdminPage() {
                         </tr>
                       ))
                     )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 1.5: REGIONAL LANGUAGE ANALYTICS */}
+        {activeTab === "languages" && (
+          <div className="space-y-6">
+            <div className="bg-[#121212] border border-[#222222] rounded-3xl p-5 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-crimson" />
+                    Regional Language Breakdown & Traffic
+                  </h3>
+                  <p className="text-xs text-slateText-muted mt-0.5">
+                    Real-time visitor volume, CTA clicks, and leads captured across regional language landing pages.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono px-3 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800 text-emerald-300">
+                    5 Regional Editions Active
+                  </span>
+                </div>
+              </div>
+
+              {/* Regional Cards Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 mb-6">
+                {languageBreakdown.map((item) => (
+                  <div
+                    key={item.code}
+                    className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/15 transition-all"
+                  >
+                    <div className="flex items-center justify-between text-xs font-mono text-slateText-muted mb-1">
+                      <span className="text-crimson font-bold uppercase">{item.code}</span>
+                      <a
+                        href={item.pathPrefix}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1"
+                      >
+                        <span>{item.pathPrefix}</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                    <div className="text-sm font-bold text-white mb-2">{item.nativeName}</div>
+                    <div className="space-y-1.5 text-xs text-slateText-secondary font-mono">
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Visits:</span>
+                        <span className="text-white font-bold">{item.visits}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Clicks:</span>
+                        <span className="text-amber-400 font-bold">{item.clicks}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-400">Leads:</span>
+                        <span className="text-emerald-400 font-bold">{item.leads}</span>
+                      </div>
+                      <div className="flex justify-between pt-1 border-t border-white/5">
+                        <span className="text-slate-400">Est. Sales:</span>
+                        <span className="text-white font-bold">₹{item.estimatedRevenue.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Regional Performance Table */}
+              <div className="overflow-x-auto rounded-2xl border border-white/5">
+                <table className="w-full text-left text-xs sm:text-sm">
+                  <thead className="bg-[#18181A] text-slateText-muted font-mono uppercase text-[11px]">
+                    <tr>
+                      <th className="p-3.5 pl-5">Language & Region</th>
+                      <th className="p-3.5">Route URL</th>
+                      <th className="p-3.5">Page Views</th>
+                      <th className="p-3.5">Unique Aspirants</th>
+                      <th className="p-3.5">CTA Clicks</th>
+                      <th className="p-3.5">Leads Captured</th>
+                      <th className="p-3.5">Conversion Rate</th>
+                      <th className="p-3.5 pr-5">Est. Revenue</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-slateText-secondary">
+                    {languageBreakdown.map((row) => (
+                      <tr key={row.code} className="hover:bg-white/[0.02] transition-colors">
+                        <td className="p-3.5 pl-5 font-medium text-white">
+                          <div className="flex flex-col">
+                            <span className="font-bold">{row.nativeName}</span>
+                            <span className="text-[11px] text-slateText-muted">{row.name}</span>
+                          </div>
+                        </td>
+                        <td className="p-3.5 font-mono">
+                          <a
+                            href={row.pathPrefix}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-crimson hover:underline flex items-center gap-1"
+                          >
+                            <span>{row.pathPrefix}</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+                        </td>
+                        <td className="p-3.5 text-white font-bold">{row.visits}</td>
+                        <td className="p-3.5 font-mono">{row.uniqueVisitors}</td>
+                        <td className="p-3.5 font-mono text-amber-400 font-bold">{row.clicks}</td>
+                        <td className="p-3.5 font-mono text-emerald-400 font-bold">{row.leads}</td>
+                        <td className="p-3.5 font-mono text-purple-400">{row.conversionRate}</td>
+                        <td className="p-3.5 pr-5 font-mono text-white font-extrabold">
+                          ₹{row.estimatedRevenue.toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -948,6 +1081,7 @@ export default function AdminPage() {
                     <th className="p-3.5 pl-5">Student Name</th>
                     <th className="p-3.5">WhatsApp Number</th>
                     <th className="p-3.5">Target Exam</th>
+                    <th className="p-3.5">Language / Page</th>
                     <th className="p-3.5">Source Button</th>
                     <th className="p-3.5">Date (IST)</th>
                     <th className="p-3.5 pr-5">Quick Action</th>
@@ -956,7 +1090,7 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-white/5 text-slateText-secondary">
                   {leads.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-6 text-center text-slateText-muted">
+                      <td colSpan={7} className="p-6 text-center text-slateText-muted">
                         No student leads captured yet.
                       </td>
                     </tr>
@@ -971,6 +1105,9 @@ export default function AdminPage() {
                           <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white/5 border border-white/10 text-slate-200">
                             {lead.targetExam}
                           </span>
+                        </td>
+                        <td className="p-3.5 font-mono text-xs text-sky-400">
+                          {lead.pagePath || (lead.lang ? `/${lead.lang}` : "/")}
                         </td>
                         <td className="p-3.5 text-xs text-slate-400 font-mono">
                           {lead.sourceButton}

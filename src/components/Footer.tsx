@@ -89,10 +89,22 @@ export default function Footer() {
         <div>
           © {new Date().getFullYear()} MINDLOCK Protocol. All rights reserved.
         </div>
+        <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-mono">
+          <span className="text-slate-500">Regional Editions:</span>
+          <Link href="/" className="hover:text-white transition-colors text-slate-300">English / हिंदी</Link>
+          <span className="text-slate-600">•</span>
+          <Link href="/te" className="hover:text-white transition-colors text-slate-300">తెలుగు (Telugu)</Link>
+          <span className="text-slate-600">•</span>
+          <Link href="/ta" className="hover:text-white transition-colors text-slate-300">தமிழ் (Tamil)</Link>
+          <span className="text-slate-600">•</span>
+          <Link href="/kn" className="hover:text-white transition-colors text-slate-300">ಕನ್ನಡ (Kannada)</Link>
+          <span className="text-slate-600">•</span>
+          <Link href="/ml" className="hover:text-white transition-colors text-slate-300">മലയാളം (Malayalam)</Link>
+        </div>
         <div className="flex items-center gap-1">
           <span>Crafted with</span>
           <Heart className="w-3 h-3 text-crimson fill-crimson" />
-          <span>for every silent late-night warrior in India</span>
+          <span>for every silent late-night warrior</span>
         </div>
       </div>
     </footer>

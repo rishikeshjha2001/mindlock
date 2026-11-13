@@ -18,6 +18,22 @@ body {
   font-family: var(--font-hindi), "Noto Sans Devanagari", system-ui, sans-serif;
 }
 
+.font-telugu {
+  font-family: "Noto Sans Telugu", system-ui, sans-serif;
+}
+
+.font-tamil {
+  font-family: "Noto Sans Tamil", system-ui, sans-serif;
+}
+
+.font-kannada {
+  font-family: "Noto Sans Kannada", system-ui, sans-serif;
+}
+
+.font-malayalam {
+  font-family: "Noto Sans Malayalam", system-ui, sans-serif;
+}
+
 .font-mono-code {
   font-family: var(--font-mono), "JetBrains Mono", monospace;
 }

@@ -8,6 +8,7 @@ interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   sourceButton: string;
+  lang?: "en-hi" | "te" | "ta" | "kn" | "ml";
 }
 
 declare global {
@@ -21,10 +22,26 @@ export default function CheckoutModal({
   isOpen,
   onClose,
   sourceButton,
+  lang = "en-hi",
 }: CheckoutModalProps) {
+  const getDefaultExam = () => {
+    switch (lang) {
+      case "te":
+        return "AP/TS EAPCET";
+      case "ta":
+        return "TNPSC Group 4/2/1";
+      case "kn":
+        return "KCET";
+      case "ml":
+        return "Kerala PSC LDC/KAS";
+      default:
+        return "JEE";
+    }
+  };
+
   const [name, setName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
-  const [targetExam, setTargetExam] = useState("JEE");
+  const [targetExam, setTargetExam] = useState(getDefaultExam());
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [isSuccessStep, setIsSuccessStep] = useState(false);
@@ -67,6 +84,8 @@ export default function CheckoutModal({
           whatsapp: cleanNumber,
           targetExam,
           sourceButton,
+          pagePath: typeof window !== "undefined" ? window.location.pathname : "/",
+          lang,
         }),
       });
 
@@ -274,13 +293,62 @@ export default function CheckoutModal({
                   onChange={(e) => setTargetExam(e.target.value)}
                   className="w-full bg-[#181818] border border-[#2a2a2a] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-crimson transition-colors cursor-pointer"
                 >
-                  <option value="JEE">JEE Main / Advanced</option>
-                  <option value="NEET">NEET UG</option>
-                  <option value="UPSC">UPSC Civil Services</option>
-                  <option value="SSC">SSC CGL / CHSL</option>
-                  <option value="Banking">Banking (IBPS, SBI PO)</option>
-                  <option value="State">State PSC / Police</option>
-                  <option value="Other">Other Competitive Exam</option>
+                  {lang === "te" ? (
+                    <>
+                      <option value="AP/TS EAPCET">AP / TS EAPCET (Engineering / Pharmacy)</option>
+                      <option value="TSPSC / APPSC">TSPSC / APPSC (Group 1, 2, 4)</option>
+                      <option value="AP/TS SI & Police">AP / TS SI & Police Constable</option>
+                      <option value="NEET UG">NEET UG</option>
+                      <option value="JEE Main">JEE Main / Advanced</option>
+                      <option value="UPSC Civils">UPSC Civil Services</option>
+                      <option value="Banking">Banking (SBI, IBPS, Andhra Bank)</option>
+                      <option value="SSC">SSC CGL / CHSL</option>
+                      <option value="Other">Other State Exam</option>
+                    </>
+                  ) : lang === "ta" ? (
+                    <>
+                      <option value="TNPSC Group 4/2/1">TNPSC (Group 4, 2, 1, VAO)</option>
+                      <option value="TNUSRB Police/SI">TNUSRB SI & Police</option>
+                      <option value="NEET UG">NEET UG</option>
+                      <option value="JEE Main">JEE Main / Advanced</option>
+                      <option value="Banking">Banking (SBI, IBPS, TN Apex)</option>
+                      <option value="UPSC">UPSC Civil Services</option>
+                      <option value="SSC">SSC CGL / CHSL</option>
+                      <option value="Other">Other TN State Exam</option>
+                    </>
+                  ) : lang === "kn" ? (
+                    <>
+                      <option value="KCET">KCET (Karnataka CET)</option>
+                      <option value="KPSC KAS">KPSC (KAS, FDA, SDA)</option>
+                      <option value="Karnataka Police PSI">Karnataka Police PSI / Constable</option>
+                      <option value="NEET UG">NEET UG</option>
+                      <option value="JEE Main">JEE Main / Advanced</option>
+                      <option value="Banking">Banking (SBI, IBPS, Canara Bank)</option>
+                      <option value="UPSC">UPSC Civil Services</option>
+                      <option value="Other">Other Karnataka State Exam</option>
+                    </>
+                  ) : lang === "ml" ? (
+                    <>
+                      <option value="Kerala PSC LDC/KAS">Kerala PSC (LDC, CPO, Secretariat Assistant, KAS)</option>
+                      <option value="KEAM">KEAM (Kerala Engg / Med)</option>
+                      <option value="NEET UG">NEET UG</option>
+                      <option value="JEE Main">JEE Main / Advanced</option>
+                      <option value="Kerala Police/SI">Kerala Police Sub-Inspector / CPO</option>
+                      <option value="Banking">Banking (SBI, Federal Bank, South Indian Bank, IBPS)</option>
+                      <option value="UPSC">UPSC Civil Services</option>
+                      <option value="Other">Other Kerala State Exam</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="JEE">JEE Main / Advanced</option>
+                      <option value="NEET">NEET UG</option>
+                      <option value="UPSC">UPSC Civil Services</option>
+                      <option value="SSC">SSC CGL / CHSL</option>
+                      <option value="Banking">Banking (IBPS, SBI PO)</option>
+                      <option value="State">State PSC / Police</option>
+                      <option value="Other">Other Competitive Exam</option>
+                    </>
+                  )}
                 </select>
               </div>
 

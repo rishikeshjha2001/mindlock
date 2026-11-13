@@ -42,6 +42,8 @@ export interface LeadRecord {
   sourceButton: string;
   createdAt: string;
   dateIst: string;
+  pagePath?: string;
+  lang?: string;
 }
 
 export interface SiteConfig {
@@ -311,6 +313,82 @@ export function calculateAnalyticsStats() {
     step2Counts[diag.step2Choice] = (step2Counts[diag.step2Choice] || 0) + 1;
   });
 
+  // Regional Language Breakdown
+  const langConfig = [
+    { code: "hi", name: "Hindi / Default", pathPrefix: "/", nativeName: "हिंदी / English" },
+    { code: "te", name: "Telugu", pathPrefix: "/te", nativeName: "తెలుగు (AP/TS)" },
+    { code: "ta", name: "Tamil", pathPrefix: "/ta", nativeName: "தமிழ் (Tamil Nadu)" },
+    { code: "kn", name: "Kannada", pathPrefix: "/kn", nativeName: "ಕನ್ನಡ (Karnataka)" },
+    { code: "ml", name: "Malayalam", pathPrefix: "/ml", nativeName: "മലയാളം (Kerala)" },
+  ];
+
+  const langMap: {
+    [code: string]: {
+      code: string;
+      name: string;
+      nativeName: string;
+      pathPrefix: string;
+      visits: number;
+      uniqueSessions: Set<string>;
+      clicks: number;
+      leads: number;
+    };
+  } = {};
+
+  langConfig.forEach((lc) => {
+    langMap[lc.code] = {
+      ...lc,
+      visits: 0,
+      uniqueSessions: new Set<string>(),
+      clicks: 0,
+      leads: 0,
+    };
+  });
+
+  const getLangCodeForPath = (path: string): string => {
+    const p = (path || "").toLowerCase();
+    if (p.startsWith("/te")) return "te";
+    if (p.startsWith("/ta")) return "ta";
+    if (p.startsWith("/kn")) return "kn";
+    if (p.startsWith("/ml")) return "ml";
+    return "hi";
+  };
+
+  store.visits.forEach((v) => {
+    const code = getLangCodeForPath(v.pagePath);
+    if (langMap[code]) {
+      langMap[code].visits += 1;
+      langMap[code].uniqueSessions.add(v.sessionId);
+    }
+  });
+
+  store.clicks.forEach((c) => {
+    const code = getLangCodeForPath(c.pagePath);
+    if (langMap[code]) {
+      langMap[code].clicks += 1;
+    }
+  });
+
+  store.leads.forEach((l) => {
+    const code = l.lang && langMap[l.lang] ? l.lang : getLangCodeForPath(l.pagePath || "");
+    if (langMap[code]) {
+      langMap[code].leads += 1;
+    }
+  });
+
+  const languageBreakdown = Object.values(langMap).map((l) => ({
+    code: l.code,
+    name: l.name,
+    nativeName: l.nativeName,
+    pathPrefix: l.pathPrefix,
+    visits: l.visits,
+    uniqueVisitors: l.uniqueSessions.size,
+    clicks: l.clicks,
+    leads: l.leads,
+    conversionRate: l.visits > 0 ? ((l.leads / l.visits) * 100).toFixed(1) + "%" : "0.0%",
+    estimatedRevenue: l.leads * 199,
+  }));
+
   return {
     kpis: {
       totalVisits,
@@ -326,6 +404,7 @@ export function calculateAnalyticsStats() {
     },
     dailyAnalytics,
     buttonIntelligence,
+    languageBreakdown,
     recentVisits: [...store.visits].reverse().slice(0, 250),
     leads: [...store.leads].reverse().slice(0, 500),
     diagnosisInsights: {
