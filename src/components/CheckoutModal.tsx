@@ -100,7 +100,8 @@ export default function CheckoutModal({
             order_id: orderInfo.orderId || undefined,
             prefill: {
               name: name.trim(),
-              contact: `+91${cleanNumber}`,
+              contact: cleanNumber, // 10-digit Indian phone number
+              email: `${cleanNumber}@aspirant.mindlock.in`,
             },
             theme: {
               color: "#E11D48",
@@ -138,8 +139,14 @@ export default function CheckoutModal({
         // If a direct Razorpay payment link or custom payment URL was configured
         if (orderInfo?.paymentUrl && orderInfo.paymentUrl.startsWith("http")) {
           setIsSuccessStep(true);
+          const separator = orderInfo.paymentUrl.includes("?") ? "&" : "?";
+          const prefilledUrl = `${orderInfo.paymentUrl}${separator}name=${encodeURIComponent(
+            name.trim()
+          )}&phone=${cleanNumber}&contact=${cleanNumber}&email=${encodeURIComponent(
+            `${cleanNumber}@aspirant.mindlock.in`
+          )}`;
           setTimeout(() => {
-            window.location.href = orderInfo.paymentUrl;
+            window.location.href = prefilledUrl;
           }, 800);
           return;
         }
