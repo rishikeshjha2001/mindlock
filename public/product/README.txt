@@ -21,3 +21,4 @@ When visitors complete their payment, they are redirected to:
 
 If files are not yet uploaded, the portal displays a sleek preparation notice
 and allows students to receive their files via WhatsApp backup support.
+

@@ -70,3 +70,4 @@ Access the web application at:
 - **Admin Panel:** [http://localhost:3000/admin](http://localhost:3000/admin)
 - **Access Confirmation Portal:** [http://localhost:3000/checkout-confirm](http://localhost:3000/checkout-confirm)
 - **Legal Pages:** `/privacy-policy`, `/terms`, `/refund-policy`
+
