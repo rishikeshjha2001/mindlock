@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import AudioPreview from "@/components/AudioPreview";
 import SelfDiagnosisWidget from "@/components/SelfDiagnosisWidget";
 import CheckoutModal from "@/components/CheckoutModal";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
@@ -22,7 +21,6 @@ import {
   Zap,
   Lock,
   ChevronDown,
-  MessageCircle,
   AlertCircle,
   Crosshair,
   Sparkles,
@@ -75,9 +73,6 @@ export default function LandingPage() {
           You are not lazy, and you are not average. Your nervous system is trapped in{" "}
           <strong className="text-white">shame paralysis and dopamine burnout</strong>. Reset how your brain handles pressure in 7 days—without fake motivation or rigid timetables.
         </p>
-
-        {/* Interactive 15-Second Audio Reality Check Card */}
-        <AudioPreview />
 
         {/* Primary Non-Sales Hero CTA */}
         <div className="mt-8 flex flex-col items-center justify-center gap-2.5">
@@ -600,26 +595,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Floating WhatsApp Support Desk */}
-      <a
-        id="whatsapp_support_btn"
-        data-track-btn="whatsapp_support_btn"
-        href="https://wa.me/919876543210?text=Hi%20MINDLOCK%20Team%2C%20I%20have%20a%20question%20about%20the%20MINDLOCK%20system"
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => {
-          trackClientClick(
-            "whatsapp_support_btn",
-            "Chat on WhatsApp Support",
-            "Floating Support"
-          );
-        }}
-        className="fixed bottom-20 md:bottom-6 right-5 z-30 w-12 h-12 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-black flex items-center justify-center shadow-lg shadow-black/50 transition-all transform hover:scale-110 active:scale-95 cursor-pointer"
-        aria-label="WhatsApp Support"
-      >
-        <MessageCircle className="w-6 h-6 fill-black" />
-      </a>
 
       {/* Sticky Bottom Mobile Bar */}
       <StickyMobileCTA onUnlockClick={handleOpenCheckout} />

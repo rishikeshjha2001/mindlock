@@ -40,6 +40,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
       </head>
       <body className="bg-[#0A0A0A] text-slateText-primary min-h-screen antialiased selection:bg-crimson selection:text-white font-sans">
         <ReadingProgressBar />

@@ -48,6 +48,8 @@ export interface SiteConfig {
   paymentUrl: string;
   vaultKey: string;
   productPrice: number;
+  razorpayKeyId?: string;
+  razorpayKeySecret?: string;
   webhookUrl: string;
   telegramBotToken: string;
   telegramChatId: string;
@@ -75,6 +77,8 @@ const defaultStore: MindlockStore = {
     paymentUrl: "/download-vault?key=mindlock2026",
     vaultKey: "mindlock2026",
     productPrice: 199,
+    razorpayKeyId: "",
+    razorpayKeySecret: "",
     webhookUrl: "",
     telegramBotToken: "",
     telegramChatId: "",

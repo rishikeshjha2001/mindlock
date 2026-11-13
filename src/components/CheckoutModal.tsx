@@ -10,6 +10,13 @@ interface CheckoutModalProps {
   sourceButton: string;
 }
 
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    Razorpay?: any;
+  }
+}
+
 export default function CheckoutModal({
   isOpen,
   onClose,
@@ -49,6 +56,7 @@ export default function CheckoutModal({
         "Access Modal"
       );
 
+      // 1. Record lead in database / store
       const res = await fetch("/api/analytics/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -62,18 +70,86 @@ export default function CheckoutModal({
         }),
       });
 
-      const data = await res.json();
+      const leadData = await res.json();
+      const fallbackRedirectUrl =
+        leadData.paymentUrl || "https://mindlock-virid.vercel.app/download-vault?key=mindlock2026";
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to record access details");
+      // 2. Initialize Razorpay
+      try {
+        const orderRes = await fetch("/api/razorpay/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.trim(),
+            whatsapp: cleanNumber,
+            targetExam,
+          }),
+        });
+
+        const orderInfo = await orderRes.json();
+
+        // If Razorpay SDK is loaded and a key is provided
+        if (orderInfo?.keyId && typeof window !== "undefined" && window.Razorpay) {
+          const options = {
+            key: orderInfo.keyId,
+            amount: orderInfo.amount || 19900,
+            currency: orderInfo.currency || "INR",
+            name: "MINDLOCK Protocol",
+            description: "Instant Access: 75-Page Blueprint + 8 Audio Drills",
+            order_id: orderInfo.orderId || undefined,
+            prefill: {
+              name: name.trim(),
+              contact: `+91${cleanNumber}`,
+            },
+            theme: {
+              color: "#E11D48",
+            },
+            handler: async function (response: {
+              razorpay_payment_id: string;
+              razorpay_order_id?: string;
+              razorpay_signature?: string;
+            }) {
+              setIsSuccessStep(true);
+              try {
+                await fetch("/api/razorpay/verify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(response),
+                });
+              } catch {}
+
+              setTimeout(() => {
+                window.location.href = "https://mindlock-virid.vercel.app/download-vault?key=mindlock2026";
+              }, 800);
+            },
+            modal: {
+              ondismiss: function () {
+                setIsLoading(false);
+              },
+            },
+          };
+
+          const rzpInstance = new window.Razorpay(options);
+          rzpInstance.open();
+          return;
+        }
+
+        // If a direct Razorpay payment link or custom payment URL was configured
+        if (orderInfo?.paymentUrl && orderInfo.paymentUrl.startsWith("http")) {
+          setIsSuccessStep(true);
+          setTimeout(() => {
+            window.location.href = orderInfo.paymentUrl;
+          }, 800);
+          return;
+        }
+      } catch (rzpErr) {
+        console.warn("Razorpay dynamic checkout fallback:", rzpErr);
       }
 
+      // Default safe redirect
       setIsSuccessStep(true);
-      const redirectUrl = data.paymentUrl || "/download-vault?key=mindlock2026";
-
-      // Brief 1-second calm transitional state before redirect
       setTimeout(() => {
-        window.location.href = redirectUrl;
+        window.location.href = fallbackRedirectUrl;
       }, 1000);
     } catch (err: unknown) {
       console.error("Lead submission error:", err);
@@ -99,86 +175,71 @@ export default function CheckoutModal({
             trackClientClick("modal_close_btn", "Close Access Modal", "Access Modal");
             onClose();
           }}
-          className="absolute top-4 right-4 text-slateText-muted hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5 cursor-pointer"
-          aria-label="Close modal"
+          className="absolute top-5 right-5 text-slateText-muted hover:text-white p-1 rounded-full hover:bg-white/5 transition-colors cursor-pointer"
+          aria-label="Close"
         >
           <X className="w-5 h-5" />
         </button>
 
         {isSuccessStep ? (
-          <div className="py-8 text-center animate-fadeIn">
-            <div className="w-14 h-14 rounded-full bg-emerald-950/80 border border-emerald-500/50 flex items-center justify-center text-emerald-400 mx-auto mb-4">
-              <CheckCircle2 className="w-7 h-7" />
+          /* Step 2: Instant Connection Confirmation State */
+          <div className="py-8 text-center space-y-4">
+            <div className="w-16 h-16 rounded-full bg-emeraldRelief/15 border border-emeraldRelief/40 flex items-center justify-center text-emeraldRelief mx-auto animate-bounce">
+              <CheckCircle2 className="w-9 h-9" />
             </div>
-            <h3 className="text-xl font-bold text-white">
-              Preparing your secure UPI checkout...
+            <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              Access Details Confirmed
             </h3>
-            <p className="text-xs text-slateText-muted mt-2">
-              Connecting to MINDLOCK Vault dispatch system. Redirecting you now...
+            <p className="text-xs sm:text-sm text-slateText-secondary max-w-xs mx-auto">
+              Connecting you to secure Razorpay UPI payment gateway...
             </p>
-            <div className="mt-5 flex justify-center">
-              <Loader2 className="w-5 h-5 text-crimson animate-spin" />
+            <div className="flex items-center justify-center gap-2 pt-2 text-crimson font-mono text-xs">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Redirecting to Vault / Razorpay...</span>
             </div>
           </div>
         ) : (
-          <>
-            {/* Header */}
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold tracking-wider bg-crimson/15 text-crimson border border-crimson/25 uppercase flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Step 1 of 2: Vault Credentials
-              </span>
-              <span className="text-[11px] text-slateText-muted">• 7-Day Honest Relief</span>
+          /* Step 1: Input Details */
+          <div>
+            <div className="flex items-center gap-2 text-crimson font-mono text-xs font-semibold uppercase tracking-wider mb-2">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Step 1 of 2: Access Protocol</span>
             </div>
 
-            <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
-              Where should we send your MINDLOCK Vault backup link?
+            <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+              Where should we send your private download access?
             </h3>
-            <p className="text-xs text-slateText-secondary mt-1">
-              Your 75-page Cognitive Blueprint + 8 Audio Reset Drills will be delivered to this WhatsApp.
+            <p className="text-xs text-slateText-muted mt-1 leading-relaxed">
+              Your 75-page Cognitive Blueprint + 8 Audio Reset Drills will be delivered to this WhatsApp and unlocked in your private vault.
             </p>
 
-            {/* Offer Summary Bar */}
-            <div className="mt-4 p-3 rounded-2xl bg-black/50 border border-white/5 flex items-center justify-between">
-              <div>
-                <div className="text-[11px] text-slateText-muted line-through font-mono">
-                  Standard Commitment: ₹799
-                </div>
-                <div className="text-base sm:text-lg font-bold text-white flex items-center gap-1.5">
-                  <span className="text-xs text-slateText-muted font-normal">Today:</span>
-                  <span className="text-crimson font-mono text-xl">₹199</span>
-                  <span className="text-[10px] font-normal text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-1.5 py-0.5 rounded font-mono">
-                    One-Time
-                  </span>
-                </div>
+            {errorMsg && (
+              <div className="mt-3 p-2.5 rounded-lg bg-red-950/40 border border-red-800/50 text-red-300 text-xs">
+                {errorMsg}
               </div>
-              <div className="text-right">
-                <div className="text-[11px] text-slateText-muted">Instant Access</div>
-                <div className="text-xs font-medium text-slate-300">Lifetime Vault</div>
-              </div>
-            </div>
+            )}
 
-            {/* Lead Capture Form */}
-            <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
+            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slateText-secondary uppercase tracking-wider mb-1">
-                  First Name *
+                <label className="block text-xs font-medium text-slateText-secondary mb-1">
+                  Full Name *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Aryan"
+                  placeholder="e.g. Rahul Sharma"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-[#2a2a2a] text-white placeholder-neutral-600 focus:outline-none focus:border-crimson text-sm"
+                  className="w-full bg-[#181818] border border-[#2a2a2a] rounded-xl px-4 py-2.5 text-sm text-white placeholder-slateText-muted focus:outline-none focus:border-crimson transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slateText-secondary uppercase tracking-wider mb-1">
+                <label className="block text-xs font-medium text-slateText-secondary mb-1">
                   WhatsApp Number (10 Digits) *
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-2.5 text-sm text-neutral-400 font-mono">
+                <div className="flex items-center bg-[#181818] border border-[#2a2a2a] rounded-xl overflow-hidden focus-within:border-crimson transition-colors">
+                  <span className="px-3 text-xs font-mono text-slateText-muted border-r border-[#2a2a2a]">
                     +91
                   </span>
                   <input
@@ -188,71 +249,79 @@ export default function CheckoutModal({
                     placeholder="9876543210"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
-                    className="w-full pl-12 pr-3.5 py-2.5 rounded-xl bg-black/60 border border-[#2a2a2a] text-white placeholder-neutral-600 focus:outline-none focus:border-crimson text-sm font-mono"
+                    className="w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-slateText-muted focus:outline-none"
                   />
                 </div>
+                <p className="text-[10px] text-slateText-muted mt-1">
+                  Used exclusively to dispatch your private vault credentials & receipts. Zero spam.
+                </p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slateText-secondary uppercase tracking-wider mb-1">
-                  Exam Preparing For *
+                <label className="block text-xs font-medium text-slateText-secondary mb-1">
+                  Target Examination *
                 </label>
                 <select
                   value={targetExam}
                   onChange={(e) => setTargetExam(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-black/60 border border-[#2a2a2a] text-white focus:outline-none focus:border-crimson text-sm"
+                  className="w-full bg-[#181818] border border-[#2a2a2a] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-crimson transition-colors cursor-pointer"
                 >
-                  <option value="JEE (Main & Advanced)">JEE (Main & Advanced)</option>
-                  <option value="NEET UG">NEET UG</option>
-                  <option value="UPSC CSE / State PSC">UPSC CSE / State PSC</option>
-                  <option value="SSC CGL / Banking / Railways">SSC & Banking</option>
-                  <option value="Board 10th-12th">Board 10-12</option>
-                  <option value="College / GATE / Other">Other Competitive Exam</option>
+                  <option value="JEE">JEE Main / Advanced</option>
+                  <option value="NEET">NEET UG</option>
+                  <option value="UPSC">UPSC Civil Services</option>
+                  <option value="SSC">SSC CGL / CHSL</option>
+                  <option value="Banking">Banking (IBPS, SBI PO)</option>
+                  <option value="State">State PSC / Police</option>
+                  <option value="Other">Other Competitive Exam</option>
                 </select>
               </div>
 
-              {errorMsg && (
-                <div className="p-2.5 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs">
-                  {errorMsg}
+              {/* Price Reframe & Guarantee in Modal */}
+              <div className="p-3 rounded-xl bg-obsidian-200 border border-white/5 flex items-center justify-between">
+                <div>
+                  <div className="text-[11px] text-slateText-muted font-mono uppercase">
+                    Protocol Fee
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-lg font-black text-white">₹199</span>
+                    <span className="text-xs text-slateText-muted line-through">₹799</span>
+                    <span className="text-[10px] font-mono text-emeraldRelief">75% OFF</span>
+                  </div>
                 </div>
-              )}
+                <div className="text-right">
+                  <div className="text-[11px] text-slateText-secondary font-medium">
+                    Instant Razorpay UPI Access
+                  </div>
+                  <div className="text-[10px] text-slateText-muted">
+                    Lifetime Vault Access
+                  </div>
+                </div>
+              </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
-                id="modal_proceed_payment_btn"
-                data-track-btn="modal_proceed_payment_btn"
                 disabled={isLoading}
-                className="w-full py-3.5 px-4 rounded-xl bg-crimson hover:bg-rose-500 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-crimson/30 transition-all transform active:scale-98 cursor-pointer disabled:opacity-50 mt-2"
+                className="w-full py-3.5 px-5 rounded-xl bg-crimson hover:bg-rose-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-crimson/25 transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Connecting to Secure UPI...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Preparing Secure Payment...</span>
                   </>
                 ) : (
                   <>
-                    <span>Continue to Instant UPI Access (₹199) →</span>
+                    <span>Proceed to Instant UPI Access — ₹199</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
-            </form>
 
-            {/* Badges */}
-            <div className="mt-4 pt-3.5 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slateText-muted">
-              <div className="flex items-center gap-1">
-                <Lock className="w-3.5 h-3.5 text-emerald-400" />
-                <span>256-Bit Encrypted</span>
+              <div className="flex items-center justify-center gap-2 text-[11px] text-slateText-muted pt-1">
+                <ShieldCheck className="w-3.5 h-3.5 text-emeraldRelief" />
+                <span>256-Bit SSL Encrypted • Razorpay & 100% Refund Guarantee</span>
               </div>
-              <div className="flex items-center gap-1.5 font-medium text-slate-300">
-                <span>GPay • PhonePe • Paytm • Cards</span>
-              </div>
-              <div className="flex items-center gap-1 text-emerald-300">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>7-Day Relief Guarantee</span>
-              </div>
-            </div>
-          </>
+            </form>
+          </div>
         )}
       </div>
     </div>
